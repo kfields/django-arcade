@@ -1,10 +1,5 @@
-from queue import Queue
-from threading import Thread, Event
-from sys import stdout, stderr
-from time import sleep
-
 import asyncio
-import json
+from contextlib import AsyncExitStack
 
 from loguru import logger
 
@@ -18,45 +13,29 @@ class GqlJob:
         self.cb = cb
         self.result = None
 
-class GqlRunner:
+class GqlRunner(AsyncExitStack):
     def __init__(self, url):
         super().__init__()
 
         self.url = url
         self.jobs = []
-        self.results = []
-        '''
-        self.httpClient = Client(
-            transport=AIOHTTPTransport(url='http://' + url),
-            fetch_schema_from_transport=True
-        )
-        '''
+
+    #It's safe to not call super.  All it does is return self
+    async def __aenter__(self):
         self.wsClient = Client(
-            transport=WebsocketsTransport(url='ws://' + url),
+            transport=WebsocketsTransport(url='ws://' + self.url),
         )
-
-    async def start(self):
-        self.wsSession = await self.wsClient.__aenter__()
-
-    async def stop(self):
-        #TODO:This is not working well at all
-        #await self.wsClient.__aexit__(None, None, None)
-        pass
+        self.wsSession = await self.enter_async_context(self.wsClient)
+        return self
 
     def add(self, fn, cb):
         self.jobs.append(GqlJob(fn, cb))
 
-    def do_callbacks(self):
-        while len(self.results) != 0:
-            result = self.results.pop(0)
-            result[0](result[1])
-
-    def step(self):
+    async def step(self):
         while len(self.jobs) != 0:
             job = self.jobs.pop(0)
             task = asyncio.create_task(job.fn())
-
-        self.do_callbacks()
+        await asyncio.sleep(0)
 
     def execute(self, query, cb, variable_values=None):
         #logger.debug('execute')

@@ -4,7 +4,6 @@ from sys import stdout, stderr
 from time import sleep
 
 import asyncio
-import json
 
 from loguru import logger
 
@@ -49,16 +48,11 @@ class EventLoop(pyglet.app.EventLoop):
         self.dispatch_event('on_enter')
         self.is_running = True
 
-        await gqlrunner.start()
-
-        while not self.has_exit:
-            timeout = self.idle()
-            platform_event_loop.step(timeout)
-            gqlrunner.step()
-            await asyncio.sleep(0)
-
-        await gqlrunner.stop()
-        asyncio.get_event_loop().stop()
+        async with gqlrunner:
+            while not self.has_exit:
+                timeout = self.idle()
+                platform_event_loop.step(timeout)
+                await gqlrunner.step()
 
         self.is_running = False
         self.dispatch_event('on_exit')
