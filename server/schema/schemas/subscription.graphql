@@ -1,0 +1,4 @@
+type Subscription {
+    counter: Int
+    counter2: Int
+}

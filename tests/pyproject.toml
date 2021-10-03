@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "django-arcade-tests"
+version = "0.1.0"
+description = ""
+authors = ["Kurtis Fields <kurtisfields@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.10"
+gql = {extras = ["all"], version = "^3.0.0a6", allow-prereleases = true}
+loguru = "^0.5.3"
+arcade = "^2.6.3"
+arcade-imgui = "^0.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.extras]
+all = ["all"]

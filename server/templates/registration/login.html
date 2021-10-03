@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+    {% include "base/navbar.html" %}
+    <section class="section">
+        <div class="container">
+            <div class="content">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Log In</button>
+                  </form>            </div>
+        </div>
+    </section>
+{% endblock %}

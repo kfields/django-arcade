@@ -1,0 +1,44 @@
+# Authentication
+
+type LogIn {
+  token: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+type Register {
+  success: Boolean!
+}
+
+input RegisterInput {
+  username: String!
+  password: String!
+  email: String!
+}
+
+input UserInput {
+  email: String!
+  username: String!
+  firstName: String!
+  lastName: String!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+}
