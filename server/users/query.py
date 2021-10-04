@@ -1,4 +1,4 @@
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 
 from schema.types.base import query
 from users.models import User
@@ -9,7 +9,7 @@ def resolve_message(*_):
     return "Hello!"
 
 @query.field("allUsers")
-@sync_to_async
+@database_sync_to_async
 def resolve_all_users(root, info, after='', before='', first=0, last=0):
     users = [u for u in User.objects.all()]
     connection = UserConnection(users)
@@ -17,6 +17,6 @@ def resolve_all_users(root, info, after='', before='', first=0, last=0):
     return result
 
 @query.field("user")
-@sync_to_async
+@database_sync_to_async
 def resolve_user(*_, id):
     return User.objects.get(id=id)

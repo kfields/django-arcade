@@ -1,10 +1,14 @@
 type Mutation {
-    setCounter(val: Int!): Int
+  setCounter(val: Int!): Int
 
-    login(data: LoginInput!): LogIn!
-    register(data: RegisterInput!): Boolean!
+  login(data: LoginInput!): LogIn!
+  register(data: RegisterInput!): Boolean!
 
-    createUser(data: UserInput!): User!
-    updateUser(id: ID!, data: UserInput!): User
-    deleteUser(id: ID!): Boolean!
+  createUser(data: UserInput!): User!
+  updateUser(id: ID!, data: UserInput!): User
+  deleteUser(id: ID!): Boolean!
+
+  createGame(data: GameInput!): Game!
+  updateGame(id: ID!, data: GameInput!): GameEvent!
+  deleteGame(id: ID!): GameEvent!
 }

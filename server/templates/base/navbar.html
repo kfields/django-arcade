@@ -45,16 +45,17 @@
         </a>
 
         <div class="navbar-dropdown">
+          {% if user.is_superuser %}
+          <a class="navbar-item" href="/admin">Admin</a>
+          {% endif %}
+  
           {% if user.is_authenticated %}
-          <a class="navbar-item" href="/profiles/{{user.username}}">My Profile</i></a>
           <a class="navbar-item" href="{% url 'logout' %}">Log out</a>
           {% else %}
           <a class="navbar-item" href="{% url 'login' %}">Log In</a>
           <a class="navbar-item" href="{% url 'signup' %}">Sign Up</a>
           {% endif %}
-          <a class="navbar-item">
-            Contact
-          </a>
+
           <hr class="navbar-divider">
           <a class="navbar-item">
             Report an issue

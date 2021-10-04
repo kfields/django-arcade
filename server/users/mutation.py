@@ -1,4 +1,4 @@
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 
 from loguru import logger
 
@@ -9,13 +9,13 @@ from users.models import User
 from users.jwt import encode_auth_token
 
 @mutation.field("setCounter")
-@sync_to_async
+@database_sync_to_async
 def setCounter(_, info, val):
     logger.debug(f"setCounter:  {val}")
     users.counter = val
 
 @mutation.field("login")
-@sync_to_async
+@database_sync_to_async
 def resolve_login(_, info, data):
     logger.debug(f"Login {data}")
 
@@ -46,7 +46,7 @@ def resolve_login(_, info, data):
     return {'token': access_token}
 
 @mutation.field("register")
-@sync_to_async
+@database_sync_to_async
 def resolve_register(_, info, data):
     logger.debug(f"registration {data}")
 

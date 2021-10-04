@@ -1,0 +1,25 @@
+type PlayerConnection {
+  edges: [PlayerEdge!]!
+  pageInfo: PageInfo!
+}
+
+type PlayerEdge {
+  cursor: String!
+  node: Player!
+}
+
+type Player {
+  id: ID!
+  user: User!
+  game: Game!
+}
+
+input PlayerInput {
+  user: User!
+  game: Game!
+}
+
+type PlayerEvent {
+  kind: String!
+  ok: Boolean!
+}
