@@ -1,8 +1,3 @@
-from queue import Queue
-from threading import Thread, Event
-from sys import stdout, stderr
-from time import sleep
-
 import asyncio
 
 from loguru import logger
@@ -74,13 +69,6 @@ class Gui:
         self.renderer.render(imgui.get_draw_data())
 
 class App(arcade.Window):
-    """
-    Main application class.
-
-    NOTE: Go ahead and delete the methods you don't need.
-    If you do need a method, delete the 'pass' and replace it
-    with your own code. Don't leave 'pass' in this program.
-    """
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)

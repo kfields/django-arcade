@@ -12,3 +12,5 @@ _build
 volumes/*
 
 server/static
+
+imgui.ini

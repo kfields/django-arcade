@@ -4,8 +4,15 @@ from loguru import logger
 
 from schema.types.base import mutation
 
+import users
 from users.models import User
 from users.jwt import encode_auth_token
+
+@mutation.field("setCounter")
+@sync_to_async
+def setCounter(_, info, val):
+    logger.debug(f"setCounter:  {val}")
+    users.counter = val
 
 @mutation.field("login")
 @sync_to_async

@@ -1,15 +1,16 @@
 import asyncio
 
 from schema.types.base import subscription
+import users
 from users.models import User
 
 @subscription.source("counter")
 async def generate_counter(obj, info):
-    count = 0
+    #count = 0
     while True:
         await asyncio.sleep(1)
-        yield count
-        count += 1
+        yield users.counter
+        users.counter += 1
 
 @subscription.field("counter")
 def resolve_counter(counter, info):

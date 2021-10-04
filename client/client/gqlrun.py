@@ -59,4 +59,4 @@ class GqlRunner(AsyncExitStack):
                 cb(result)
         self.add(fn, cb)
 
-runner = GqlRunner('localhost:8000/graphql/')
+#runner = GqlRunner('localhost:8000/graphql/')
