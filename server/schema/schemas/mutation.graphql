@@ -8,7 +8,7 @@ type Mutation {
   updateUser(id: ID!, data: UserInput!): User
   deleteUser(id: ID!): Boolean!
 
-  createGame(data: GameInput!): Game!
+  createGame: Game!
   updateGame(id: ID!, data: GameInput!): GameEvent!
   deleteGame(id: ID!): GameEvent!
 }

@@ -2,13 +2,10 @@ from gql import gql
 
 from loguru import logger
 
-import pyglet
 import arcade
-
 import imgui
 
 from .page import Page
-
 import app
 
 getMessageQuery = gql("""
@@ -63,9 +60,12 @@ class Login(Page):
         )
 
         if imgui.button("Login"):
-            def cb(token):
+            def cb(data):
+                token = data['login']['token']
+                logger.debug(f"token:  {token}")
                 self.message = token
                 if token:
+                    self.app.runner.token = token
                     self.app.user.logged_in = True
                     self.app.router.go('home')
             login(self.username, self.password, cb)

@@ -1,7 +1,7 @@
 import asyncio
 from channels.db import database_sync_to_async
 
-from schema.types.base import subscription
+from schema.base import subscription
 import users
 from users.models import User
 

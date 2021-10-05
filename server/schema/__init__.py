@@ -9,7 +9,13 @@ from ariadne import (
 
 from django.conf import settings
 
-from .types import types
+from .user import user
+
+from .query import query
+from .mutation import mutation
+from .subscription import subscription
+
+types = [user, query, mutation, subscription]
 
 type_defs = load_schema_from_path(
     os.path.join(settings.BASE_DIR, "schema", "schemas")

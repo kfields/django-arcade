@@ -38,6 +38,8 @@ INSTALLED_APPS = [
 
     'users',
     'pages',
+    'players',
+    'games',
     'orders',
 ]
 

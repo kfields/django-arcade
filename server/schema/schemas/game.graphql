@@ -16,7 +16,7 @@ type Game {
 }
 
 input GameInput {
-  user: User!
+  state: String!
 }
 
 type GameEvent {

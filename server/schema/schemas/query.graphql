@@ -1,5 +1,9 @@
 type Query {
     getMessage: String!
+
     allUsers(after: String, before: String, first: Int, last: Int): UserConnection!
     user(id: ID!): User!
+
+    allGames(after: String, before: String, first: Int, last: Int): GameConnection!
+    game(id: ID!): Game!
 }

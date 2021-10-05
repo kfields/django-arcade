@@ -1,17 +1,23 @@
-from blogsley.django.graphql import query
+from loguru import logger
 
-from .models import Post
-from .schema import PostConnection, PostEdge, PostNode
+from channels.db import database_sync_to_async
 
-@query.field("allPosts")
-def resolve_all_posts(root, info):
-    # return Post.objects.all()
-    posts = [p for p in Post.objects.all()]
-    connection = PostConnection(posts)
+from schema.base import query
+
+from .models import Game
+from .schema import GameConnection
+
+@query.field("allGames")
+@database_sync_to_async
+def resolve_all_games(root, info):
+    # return Game.objects.all()
+    games = [p for p in Game.objects.all()]
+    connection = GameConnection(games)
     result = connection.wire()
     return result
 
 
-@query.field("post")
-def resolve_post(*_, id):
-    return Post.objects.get(id=id)
+@query.field("game")
+@database_sync_to_async
+def resolve_game(*_, id):
+    return Game.objects.get(id=id)

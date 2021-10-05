@@ -67,6 +67,7 @@ class Gui:
 class App(arcade.Window):
     def __init__(self):
         super().__init__(1024, 768, "Django Arcade", resizable=True)
+        self.runner = gqlrunner
         self.user = User()
         self.router = Router(self)
         self.gui = Gui(self)

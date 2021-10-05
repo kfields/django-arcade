@@ -4,23 +4,19 @@ from channels.db import database_sync_to_async
 
 from .hub import hub, GameSubscriber, GameEvent
 
-from schema.types.base import mutation
+from schema.base import mutation
 from users.jwt import load_user
 from .models import Game
 
 
 @mutation.field("createGame")
 @database_sync_to_async
-def resolve_create_game(_, info, data):
+def resolve_create_game(_, info):
     user = load_user(info)
     if not user.is_authenticated:
         raise Exception("You can't do that!")
 
-    title = data.get("title", None)
-    block = data.get("block", None)
-    body = data.get("body", None)
-
-    game = Game.objects.create(title=title, block=block, body=body)
+    game = Game.objects.create(state=" " * 9)
 
     return game
 

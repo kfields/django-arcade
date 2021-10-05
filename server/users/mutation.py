@@ -2,7 +2,7 @@ from channels.db import database_sync_to_async
 
 from loguru import logger
 
-from schema.types.base import mutation
+from schema.base import mutation
 
 import users
 from users.models import User

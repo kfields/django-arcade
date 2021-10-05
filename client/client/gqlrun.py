@@ -19,6 +19,7 @@ class GqlRunner(AsyncExitStack):
 
         self.url = url
         self.jobs = []
+        self.token = ''
 
     #It's safe to not call super.  All it does is return self
     async def __aenter__(self):
@@ -38,10 +39,13 @@ class GqlRunner(AsyncExitStack):
         await asyncio.sleep(0)
 
     def execute(self, query, cb, variable_values=None):
+        headers=None
+        if self.token:
+            headers={'Authorization': self.token}
         #logger.debug('execute')
         async def fn():
             client = Client(
-                transport=AIOHTTPTransport(url='http://' + self.url),
+                transport=AIOHTTPTransport(url='http://' + self.url, headers=headers),
                 fetch_schema_from_transport=True
             )
 

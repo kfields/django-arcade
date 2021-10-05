@@ -1,8 +1,8 @@
 from channels.db import database_sync_to_async
 
-from schema.types.base import query
+from schema.base import query
 from users.models import User
-from . import UserConnection
+from .schemata import UserConnection
 
 @query.field("getMessage")
 def resolve_message(*_):

@@ -1,12 +1,12 @@
-from blogsley.core.hub import Hub, Subscriber, Event
+from hub import Hub, Subscriber, Event
 
 hub = Hub()
 
-class PostEvent(Event):
+class GameEvent(Event):
     def __init__(self, id, kind):
         super().__init__(id, kind)
 
-class PostSubscriber(Subscriber):
+class GameSubscriber(Subscriber):
     def __init__(self, id):
         super().__init__()
         self.id = id

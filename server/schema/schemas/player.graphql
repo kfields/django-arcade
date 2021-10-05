@@ -15,8 +15,8 @@ type Player {
 }
 
 input PlayerInput {
-  user: User!
-  game: Game!
+  user: ID!
+  game: ID!
 }
 
 type PlayerEvent {
