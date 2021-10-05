@@ -12,8 +12,8 @@ class Page(arcade.View):
         pass
 
     @classmethod
-    def create(self, app, name, title):
-        page = self(app, name, title)
+    def create(self, app, name, title, **kwargs):
+        page = self(app, name, title, **kwargs)
         page.reset()
         return page
 

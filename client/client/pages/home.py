@@ -79,7 +79,7 @@ class Home(Page):
                 )
                 '''
                 if opened:
-                    print(game['id'])
+                    self.app.router.go('game', id=game['id'])
                 #imgui.text(game['id'])
                 imgui.next_column()
                 '''

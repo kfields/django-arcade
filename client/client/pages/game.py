@@ -31,6 +31,10 @@ def setCounter(val, cb):
 
 class GamePage(Page):
 
+    def __init__(self, window, name, title, **kwargs):
+        super().__init__(window, name, title)
+        self.id = kwargs['id']
+
     def reset(self):
         self.counter = 0
         self.test_input = 0

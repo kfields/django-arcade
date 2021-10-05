@@ -32,11 +32,11 @@ class Router:
         # print(page.__dict__)
         self.pages[name] = { 'klass': klass, 'name': name, 'title': title }
 
-    def go(self, name):
+    def go(self, name, **kwargs):
         if not self.app.user.logged_in:
             name = 'login'
         def callback(delta_time):
             entry = self.pages[name]
-            self.page = page = entry['klass'].create(self.app, name, entry['title'])
+            self.page = page = entry['klass'].create(self.app, name, entry['title'], **kwargs)
             self.app.show_view(page)
         pyglet.clock.schedule_once(callback, 0)
