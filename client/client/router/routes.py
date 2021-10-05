@@ -3,4 +3,5 @@ routes = [
     'login',
     'counter',
     'users',
+    'game',
 ]

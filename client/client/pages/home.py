@@ -57,7 +57,7 @@ class Home(Page):
     def draw(self):
         imgui.begin("Games")
 
-        imgui.columns(3, 'Games')
+        imgui.columns(1, 'Games')
         imgui.separator()
         imgui.text("ID")
         '''
@@ -67,12 +67,20 @@ class Home(Page):
         imgui.text("Email")
         '''
         imgui.separator()
-        imgui.set_column_offset(1, 40)
+        #imgui.set_column_offset(1, 40)
 
         if self.games:
             for game in self.games:
                 imgui.next_column()
-                imgui.text(user['id'])
+                opened, _ = imgui.selectable(game['id'], flags=imgui.SELECTABLE_SPAN_ALL_COLUMNS)
+                '''
+                opened, self.selected[0] = imgui.selectable(
+                    game['id'], self.selected[0], flags=imgui.SELECTABLE_SPAN_ALL_COLUMNS
+                )
+                '''
+                if opened:
+                    print(game['id'])
+                #imgui.text(game['id'])
                 imgui.next_column()
                 '''
                 imgui.text(user['username'])

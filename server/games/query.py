@@ -5,12 +5,11 @@ from channels.db import database_sync_to_async
 from schema.base import query
 
 from .models import Game
-from .schema import GameConnection
+from .schemata import GameConnection
 
 @query.field("allGames")
 @database_sync_to_async
-def resolve_all_games(root, info):
-    # return Game.objects.all()
+def resolve_all_games(root, info, after='', before='', first=0, last=0):
     games = [p for p in Game.objects.all()]
     connection = GameConnection(games)
     result = connection.wire()
