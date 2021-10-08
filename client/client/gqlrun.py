@@ -56,10 +56,10 @@ class GqlRunner(AsyncExitStack):
                 cb(result)
         self.add(fn, cb)
 
-    def subscribe(self, query, cb):
+    def subscribe(self, query, cb, variable_values=None):
         async def fn(): 
             session = self.wsSession
-            async for result in session.subscribe(query):
+            async for result in session.subscribe(query, variable_values=variable_values):
                 cb(result)
         self.add(fn, cb)
 

@@ -1,15 +1,14 @@
 import asyncio
 
+from loguru import logger
 
 class Message:
     pass
 
 
 class Event(Message):
-    def __init__(self, id, kind='default', ok=True):
+    def __init__(self, id):
         self.id = id
-        self.kind = kind
-        self.ok = ok
 
 
 class Subscriber:
@@ -18,7 +17,7 @@ class Subscriber:
         self.active = True
 
     def send(self, msg):
-        pass
+        logger.debug(f'Subscriber:send: {msg}')
 
     async def receive(self):
         await self.queue.get()
@@ -31,8 +30,10 @@ class Hub:
         self.subscribers.append(subscriber)
 
     async def send(self, msg):
+        logger.debug(f'Hub:send: {msg}')
         asyncio.create_task(self.publish(msg))
 
     async def publish(self, msg):
+        logger.debug(f'Hub:publish: {msg}')
         for subscriber in self.subscribers:
             await subscriber.send(msg)

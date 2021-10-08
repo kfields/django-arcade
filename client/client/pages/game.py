@@ -12,11 +12,30 @@ from player import Player
 
 import app
 
-counterQuery = gql("""
-subscription {
-  counter
+gameQuery = gql("""
+subscription ($gameId: ID!) {
+  game
 }
 """)
+
+def observeGame(id, cb):
+    query = gql(
+        """
+        subscription ($id: ID!) {
+            game(id: $id) {
+                __typename
+                id
+                ... on JoinGameEvent {
+                    playerId
+                }
+            }
+        }
+    """
+    )
+    params = {
+        "id": id,
+    }
+    app.gqlrunner.subscribe(query, cb, variable_values=params)
 
 def joinGame(gameId, cb):
     query = gql(
@@ -37,7 +56,12 @@ class GamePage(Page):
 
     def __init__(self, window, name, title, **kwargs):
         super().__init__(window, name, title)
-        self.game = Game(kwargs['id'])
+        gameId = kwargs['id']
+        self.game = Game(gameId)
+
+        def cb(data):
+            logger.debug(f'GameEvent:  {data}')
+        observeGame(gameId, cb)
 
         def cb(data):
             logger.debug(f'joinGame:  {data}')

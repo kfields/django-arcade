@@ -2,28 +2,38 @@ from loguru import logger
 
 from channels.db import database_sync_to_async
 
-from .hub import hub, PlayerSubscriber, PlayerEvent
+#from .hub import hub, PlayerSubscriber, PlayerEvent
+from games.hub import hub as gamehub, JoinEvent
 
 from schema.base import mutation
 from users.jwt import load_user
 from .models import Player, Game
 
-
-@mutation.field("joinGame")
 @database_sync_to_async
-def resolve_join_game(_, info, gameId):
+def sync_resolve_join_game(_, info, gameId):
     user = load_user(info)
     if not user.is_authenticated:
         raise Exception("User not authenticated")
     game = Game.objects.get(id=gameId)
 
     if Player.objects.filter(user=user, game=game).exists():
-        return Player.objects.get(user=user, game=game)
+        player = Player.objects.get(user=user, game=game)
     #else
-    if len(Player.objects.filter(game=game)) == 0:
-        return Player.objects.create(user=user, game=game, symbol='X')
+    elif len(Player.objects.filter(game=game)) == 0:
+        player = Player.objects.create(user=user, game=game, symbol='X')
     else:
-        return Player.objects.create(user=user, game=game, symbol='O')
+        player = Player.objects.create(user=user, game=game, symbol='O')
+
+    return player, gameId
+
+@mutation.field("joinGame")
+#async def resolve_join_game(_, info, gameId):
+async def resolve_join_game(*args, **kwargs):
+    player, gameId = await sync_resolve_join_game(*args, **kwargs)
+    event = JoinEvent(gameId, player.id)
+    await gamehub.send(event)
+    return player
+
 
 '''
 @mutation.field("updatePlayer")

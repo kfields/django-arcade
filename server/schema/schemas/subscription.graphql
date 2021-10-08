@@ -1,4 +1,5 @@
 type Subscription {
     counter: Int
     counter2: Int
+    game(id: ID!): GameEvent
 }

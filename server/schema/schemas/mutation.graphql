@@ -9,10 +9,20 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
 
   createGame: Game!
-  updateGame(id: ID!, data: GameInput!): GameEvent!
-  deleteGame(id: ID!): GameEvent!
+  updateGame(id: ID!, data: GameInput!): UpdateGamePayload!
+  deleteGame(id: ID!): DeleteGamePayload!
 
   joinGame(gameId: ID!): Player!
   updatePlayer(id: ID!, data: PlayerInput!): PlayerEvent!
   deletePlayer(id: ID!): PlayerEvent!
+}
+
+type UpdateGamePayload {
+  message: String!
+  ok: Boolean!
+}
+
+type DeleteGamePayload {
+  message: String!
+  ok: Boolean!
 }

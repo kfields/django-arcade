@@ -1,0 +1,12 @@
+interface GameEvent {
+    id: ID!
+}
+
+type JoinGameEvent implements GameEvent {
+    id: ID!
+    playerId: ID!
+}
+
+type StartGameEvent implements GameEvent {
+    id: ID!
+}

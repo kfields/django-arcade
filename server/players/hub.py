@@ -14,5 +14,6 @@ class PlayerSubscriber(Subscriber):
     async def send(self, msg):
         print('put in queue')
         if msg.id != self.id:
+            print('no match')
             return
         await self.queue.put(msg)

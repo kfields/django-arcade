@@ -2,8 +2,8 @@ import os, sys
 
 from pathlib import Path
 
-from loguru import logger
-logger.add(sys.stdout, level="DEBUG")
+#from loguru import logger
+#logger.add(sys.stdout, level="DEBUG")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

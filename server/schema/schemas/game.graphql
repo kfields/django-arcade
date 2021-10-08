@@ -18,8 +18,3 @@ type Game {
 input GameInput {
   state: String!
 }
-
-type GameEvent {
-  kind: String!
-  ok: Boolean!
-}
