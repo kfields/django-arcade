@@ -6,6 +6,7 @@ authors = ["Kurtis Fields <kurtisfields@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.10"
+django-arcade-core = {path = "../core", develop = true}
 gql = {extras = ["all"], version = "^3.0.0a6", allow-prereleases = true}
 loguru = "^0.5.3"
 arcade = "^2.6.3"

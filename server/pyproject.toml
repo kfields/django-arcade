@@ -5,7 +5,8 @@ description = ""
 authors = ["Kurtis Fields <kurtisfields@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<4.0"
+django-arcade-core = {path = "../core", develop = true}
 Django = "^3.2.7"
 ariadne-django = "^0.2.0"
 loguru = "^0.5.3"

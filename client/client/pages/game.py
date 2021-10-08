@@ -6,6 +6,8 @@ import arcade
 
 import imgui
 
+from django_arcade_core.game_event import GameEvent
+
 from .page import Page
 from game import Game
 from player import Player
@@ -60,7 +62,7 @@ class GamePage(Page):
         self.game = Game(gameId)
 
         def cb(data):
-            logger.debug(f'GameEvent:  {data}')
+            self.dispatch(data['game'])
         observeGame(gameId, cb)
 
         def cb(data):
@@ -69,6 +71,11 @@ class GamePage(Page):
             logger.debug(f'Player:  {player}')
 
         joinGame(self.game.id, cb)
+
+    def dispatch(self, data):
+        logger.debug(f'dispatch:data:  {data}')
+        event = GameEvent.produce(data)
+        logger.debug(f'dispatch:event:  {event}')
 
 
     def draw(self):
