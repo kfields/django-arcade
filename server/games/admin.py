@@ -4,4 +4,4 @@ from .models import Game
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    pass
+    fields = ('id', 'players')

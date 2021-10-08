@@ -7,6 +7,8 @@ import arcade
 import imgui
 
 from .page import Page
+from game import Game
+from player import Player
 
 import app
 
@@ -16,16 +18,18 @@ subscription {
 }
 """)
 
-def setCounter(val, cb):
+def joinGame(gameId, cb):
     query = gql(
         """
-        mutation ($val: Int!) {
-          setCounter(val: $val)
+        mutation ($gameId: ID!) {
+          joinGame(gameId: $gameId) {
+            id
+          }
         }
     """
     )
     params = {
-        "val": val,
+        "gameId": gameId,
     }
     app.gqlrunner.execute(query, cb, variable_values=params)
 
@@ -33,34 +37,22 @@ class GamePage(Page):
 
     def __init__(self, window, name, title, **kwargs):
         super().__init__(window, name, title)
-        self.id = kwargs['id']
-
-    def reset(self):
-        self.counter = 0
-        self.test_input = 0
+        self.game = Game(kwargs['id'])
 
         def cb(data):
-            self.counter = data['counter']
+            logger.debug(f'joinGame:  {data}')
+            player = self.player = Player(data['joinGame']['id'])
+            logger.debug(f'Player:  {player}')
 
-        app.gqlrunner.subscribe(counterQuery, cb)
+        joinGame(self.game.id, cb)
 
 
     def draw(self):
-        imgui.begin("Counter")
-
-        imgui.text('Count:  ')
-        imgui.same_line()
-        imgui.text(str(self.counter))
-        changed, self.test_input = imgui.input_int("Integer Input Test", self.test_input)
-
-        if imgui.button("Set Counter"):
-            def cb(data):
-                pass
-            setCounter(self.test_input, cb)
+        imgui.begin("Tic Tac Toe")
+        #imgui.text(f'Count:  ')
 
         imgui.end()
 
-        arcade.draw_text(str(self.counter), 512, 128, arcade.color.WHITE_SMOKE, 64)
 
 def install(app):
     app.add_page(GamePage, "game", "Game")

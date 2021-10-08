@@ -14,7 +14,7 @@ from .models import Game
 def resolve_create_game(_, info):
     user = load_user(info)
     if not user.is_authenticated:
-        raise Exception("You can't do that!")
+        raise Exception("User not authenticated")
 
     game = Game.objects.create(state=" " * 9)
 
@@ -26,7 +26,7 @@ def resolve_create_game(_, info):
 def resolve_update_game(_, info, id, data):
     user = load_user(info)
     if not user.is_authenticated:
-        raise Exception("You can't do that!")
+        raise Exception("User not authenticated")
 
     try:
         game = Game.objects.get(id=id)
@@ -53,7 +53,7 @@ def resolve_update_game(_, info, id, data):
 def resolve_delete_game(_, info, id):
     user = load_user(info)
     if not user.is_authenticated:
-        raise Exception("You can't do that!")
+        raise Exception("User not authenticated")
 
     try:
         game = Game.objects.get(id=id)

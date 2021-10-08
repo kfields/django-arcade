@@ -7,4 +7,4 @@ class Game(models.Model):
     state = models.CharField(max_length=9)
 
     def __str__(self):
-        return self.state
+        return str(self.id)

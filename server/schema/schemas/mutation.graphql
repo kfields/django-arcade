@@ -5,10 +5,14 @@ type Mutation {
   register(data: RegisterInput!): Boolean!
 
   createUser(data: UserInput!): User!
-  updateUser(id: ID!, data: UserInput!): User
+  updateUser(id: ID!, data: UserInput!): User!
   deleteUser(id: ID!): Boolean!
 
   createGame: Game!
   updateGame(id: ID!, data: GameInput!): GameEvent!
   deleteGame(id: ID!): GameEvent!
+
+  joinGame(gameId: ID!): Player!
+  updatePlayer(id: ID!, data: PlayerInput!): PlayerEvent!
+  deletePlayer(id: ID!): PlayerEvent!
 }
