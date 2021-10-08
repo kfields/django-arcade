@@ -3,7 +3,7 @@ from loguru import logger
 from channels.db import database_sync_to_async
 
 #from .hub import hub, PlayerSubscriber, PlayerEvent
-from games.hub import hub as gamehub, JoinEvent
+from games.hub import hub as gamehub, JoinGameEvent
 
 from schema.base import mutation
 from users.jwt import load_user
@@ -27,10 +27,10 @@ def sync_resolve_join_game(_, info, gameId):
     return player, gameId
 
 @mutation.field("joinGame")
-#async def resolve_join_game(_, info, gameId):
 async def resolve_join_game(*args, **kwargs):
     player, gameId = await sync_resolve_join_game(*args, **kwargs)
-    event = JoinEvent(gameId, player.id)
+    logger.debug(f'resolve_join_game:player_id:  {player.id}')
+    event = JoinGameEvent(gameId, player.id)
     await gamehub.send(event)
     return player
 

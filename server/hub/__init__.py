@@ -3,13 +3,12 @@ import asyncio
 from loguru import logger
 
 class Message:
-    pass
-
+    def resolve_type(self):
+        return self.__class__.__name__
 
 class Event(Message):
     def __init__(self, id):
         self.id = id
-
 
 class Subscriber:
     def __init__(self):
@@ -20,7 +19,10 @@ class Subscriber:
         logger.debug(f'Subscriber:send: {msg}')
 
     async def receive(self):
-        await self.queue.get()
+        msg = await self.queue.get()
+        logger.debug(f'Subscriber:receive: {msg}')
+        return msg
+
 
 class Hub:
     def __init__(self):
