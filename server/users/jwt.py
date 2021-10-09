@@ -19,7 +19,6 @@ def encode_auth_token(**kwargs):
 
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-
 def load_user(info):
     request = info.context["request"]
     token = decode_auth_token(request)

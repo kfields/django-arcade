@@ -1,6 +1,11 @@
 class Schemata:
     def __init__(self):
-        self.typename = self.__class__.__name__
+        #self.typename = self.__class__.__name__
+        pass
+    @property
+    def typename(self):
+        return self.__class__.__name__
+
     def wire(self):
         return {}
 
