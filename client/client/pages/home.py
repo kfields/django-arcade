@@ -26,7 +26,7 @@ def allGames(cb):
 
     app.gqlrunner.execute(query, cb)
 
-def newGame(cb):
+def createGame(cb):
     query = gql(
         """
         mutation {
@@ -91,10 +91,12 @@ class Home(Page):
         imgui.columns(1)
 
         if imgui.button("New Game"):
-            def cb(game):
+            def cb(data):
+                game = data['createGame']
                 self.game = game
                 logger.debug(f"Game:  {game}")
-            newGame(cb)
+                self.app.router.go('game', id=game['id'])
+            createGame(cb)
 
         imgui.end()
 

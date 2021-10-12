@@ -11,6 +11,7 @@ from django_arcade_core.game_event import GameEvent
 from .page import Page
 from game import Game
 from player import Player
+from board import Board
 
 import app
 
@@ -30,6 +31,11 @@ def observeGame(id, cb):
                 ... on JoinGameEvent {
                     playerId
                 }
+                ... on MarkEvent {
+                    symbol
+                    x
+                    y
+                }
             }
         }
     """
@@ -44,13 +50,34 @@ def joinGame(gameId, cb):
         """
         mutation ($gameId: ID!) {
           joinGame(gameId: $gameId) {
-            id
+              player {
+                id
+                symbol
+            }
           }
         }
     """
     )
     params = {
         "gameId": gameId,
+    }
+    app.gqlrunner.execute(query, cb, variable_values=params)
+
+def mark(gameId, x, y, cb):
+    query = gql(
+        """
+        mutation ($gameId: ID!, $x: Int!, $y: Int!) {
+          mark(gameId: $gameId, x: $x, y: $y) {
+            ok
+            message
+          }
+        }
+    """
+    )
+    params = {
+        "gameId": gameId,
+        "x": x,
+        "y": y,
     }
     app.gqlrunner.execute(query, cb, variable_values=params)
 
@@ -61,13 +88,20 @@ class GamePage(Page):
         gameId = kwargs['id']
         self.game = Game(gameId)
 
+        def cb(x, y):
+            def cb2(data):
+                logger.debug(f'board:mark:  {data}')
+            mark(gameId, x, y, cb2)
+        self.board = Board(cb, 512, window.height - 256, 256, 256)
+
         def cb(data):
             self.dispatch(data['game'])
         observeGame(gameId, cb)
 
         def cb(data):
             logger.debug(f'joinGame:  {data}')
-            player = self.player = Player(data['joinGame']['id'])
+            player = self.player = Player(data['joinGame']['player']['id'])
+            self.board.symbol = data['joinGame']['player']['symbol']
             logger.debug(f'Player:  {player}')
 
         joinGame(self.game.id, cb)
@@ -76,14 +110,17 @@ class GamePage(Page):
         logger.debug(f'dispatch:data:  {data}')
         event = GameEvent.produce(data)
         logger.debug(f'dispatch:event:  {event}')
+        if isinstance(event, MarkEvent):
+            self.board.mark(event.symbol, event.x, event.y)
 
 
     def draw(self):
-        imgui.begin("Tic Tac Toe")
-        #imgui.text(f'Count:  ')
+        self.board.draw()
+        #imgui.begin("Tic Tac Toe")
+        #imgui.end()
 
-        imgui.end()
-
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        self.board.on_mouse_press(x, y, button, key_modifiers)
 
 def install(app):
     app.add_page(GamePage, "game", "Game")

@@ -31,7 +31,7 @@ class Hub:
     def subscribe(self, subscriber):
         self.subscribers.append(subscriber)
 
-    async def send(self, msg):
+    def send(self, msg):
         logger.debug(f'Hub:send: {msg}')
         asyncio.create_task(self.publish(msg))
 

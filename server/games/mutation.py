@@ -67,29 +67,29 @@ def resolve_delete_game(_, info, id):
 
     return event
 
+@mutation.field("joinGame")
 @database_sync_to_async
 def sync_resolve_join_game(_, info, gameId):
     game = Game.objects.get(id=gameId)
-
     user = load_user(info)
     if not user.is_authenticated:
         raise Exception("User not authenticated")
-    '''
-    if Player.objects.filter(user=user, game=game).exists():
-        player = Player.objects.get(user=user, game=game)
-    #else
-    elif len(Player.objects.filter(game=game)) == 0:
-        player = Player.objects.create(user=user, game=game, symbol='X')
-    else:
-        player = Player.objects.create(user=user, game=game, symbol='O')
-    '''
-    player = game.join(user)
-    return player, gameId
+    payload = game.join(user)
+    logger.debug(f'resolve_join_game:payload:  {payload}')
+    if payload['ok']:
+        game.save()
+    return payload
 
-@mutation.field("joinGame")
-async def resolve_join_game(*args, **kwargs):
-    player, gameId = await sync_resolve_join_game(*args, **kwargs)
-    logger.debug(f'resolve_join_game:player_id:  {player.id}')
-    event = JoinGameEvent(gameId, player.id)
-    await hub.send(event)
-    return player
+
+@mutation.field("mark")
+@database_sync_to_async
+def resolve_mark(_, info, gameId, x, y):
+    game = Game.objects.get(id=gameId)
+    user = load_user(info)
+    if not user.is_authenticated:
+        raise Exception("User not authenticated")
+    payload = game.mark(user, x, y)
+    logger.debug(f'resolve_mark:payload:  {payload}')
+    if payload['ok']:
+        game.save()
+    return payload

@@ -7,6 +7,9 @@ type JoinGameEvent implements GameEvent {
     playerId: ID!
 }
 
-type StartGameEvent implements GameEvent {
+type MarkEvent implements GameEvent {
     id: ID!
+    symbol: String!
+    x: Int!
+    y: Int!
 }

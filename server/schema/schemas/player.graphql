@@ -12,6 +12,7 @@ type Player {
   id: ID!
   user: User!
   game: Game!
+  symbol: String!
 }
 
 input PlayerInput {
