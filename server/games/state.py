@@ -69,10 +69,9 @@ class TurnState(GameState):
     def mark(self, game, user, x, y):
         player = Player.objects.get(user=user, game=game)
         if player.id != self.rotation[0]:
-            return { 'ok': False, 'message': 'Not your turn!'}
+            return { 'ok': False, 'message': 'Not your turn!'}, None
         self.board[x][y] = player.symbol
-        hub.send(MarkEvent(game.id, x, y, player.symbol))
-        return { 'ok': True, 'message': ''}
+        return { 'ok': True, 'message': ''}, MarkEvent(game.id, player.symbol, x, y)
 
 
 class GameStateEncoder(json.JSONEncoder):

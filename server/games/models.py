@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 from django.db import models
@@ -8,6 +9,7 @@ from players.models import Player
 from .state import default_state, GameStateEncoder, GameStateDecoder
 
 class Game(models.Model):
+    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     state = models.JSONField(encoder=GameStateEncoder, decoder=GameStateDecoder, default=default_state)
 
     def __str__(self):

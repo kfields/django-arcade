@@ -45,7 +45,7 @@ class Node(Schemata):
         self.objekt = objekt
 
     def wire(self):
-        # result = self.objekt.__dict__
-        result = vars(self.objekt)
-        result['__typename'] = self.typename,
+        result = self.objekt.__dict__
+        #result = vars(self.objekt)
+        result['__typename'] = self.typename
         return result

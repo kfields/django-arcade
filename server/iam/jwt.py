@@ -28,8 +28,13 @@ def load_user(info):
     return User.objects.get(id=token["id"])
 
 
-def decode_auth_token(request):
-    auth_token = request.headers.get("Authorization")
+def decode_auth_token(scope):
+    logger.debug(f"jwt:decode:scope:  {scope}")
+    headers = dict(scope['headers'])
+    if not b'authorization' in headers:
+        return None
+
+    auth_token = headers[b'authorization'].decode()
     if auth_token.startswith("Bearer "):
         auth_token = auth_token.split(" ", 1)[1]
     logger.debug(f"jwt:decode:  {auth_token}")

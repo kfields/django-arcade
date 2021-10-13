@@ -15,17 +15,29 @@ from ariadne.asgi import GraphQL
 from channels.routing import URLRouter
 from django.urls import path, re_path
 
+
+from users.auth import BasicAuthBackend
 from schema import schema
+from users.jwt import jwt_middleware
+from iam.middleware import TokenAuthMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
+def get_context_value(request):
+    return {
+        "request": request,
+        "cookies": request.scope.get("cookies", {}),
+        "user": request.scope.get("user"),
+        "session": request.scope.get("session"),
+    }
 
-application = URLRouter(
+application = TokenAuthMiddleware(URLRouter(
     [
-        path("graphql/", GraphQL(schema, debug=True)),
+        #path("graphql/", GraphQL(schema, debug=True, middleware=[jwt_middleware])),
+        path("graphql/", GraphQL(schema, debug=True, context_value=get_context_value)),
         re_path(r"", get_asgi_application()),
     ]
-)
+))
 
 '''
 import os

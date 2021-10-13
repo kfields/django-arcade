@@ -37,8 +37,8 @@ class GameSubscriber(Subscriber):
         self.id = id
 
     async def send(self, msg):
-        logger.debug(f'GameSubscriber:send:  {msg}')
+        logger.debug(f'GameSubscriber:send:  {msg.__dict__}')
         if msg.id != self.id:
-            logger.debug(f'GameSubscriber:send:no match:  {msg}')
+            logger.debug(f'GameSubscriber:send:no match:self:  {self.__dict__}')
             return
         await self.queue.put(msg)

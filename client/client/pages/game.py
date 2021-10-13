@@ -6,7 +6,7 @@ import arcade
 
 import imgui
 
-from django_arcade_core.game_event import GameEvent
+from django_arcade_core.game_event import GameEvent, MarkEvent
 
 from .page import Page
 from game import Game
@@ -95,6 +95,7 @@ class GamePage(Page):
         self.board = Board(cb, 512, window.height - 256, 256, 256)
 
         def cb(data):
+            logger.debug(f'observe:data:  {data}')
             self.dispatch(data['game'])
         observeGame(gameId, cb)
 

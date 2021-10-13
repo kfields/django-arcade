@@ -2,7 +2,7 @@ from loguru import logger
 
 from channels.db import database_sync_to_async
 
-from django_arcade_core.game_event import GameEvent, JoinGameEvent
+from django_arcade_core.game_event import GameEvent, JoinGameEvent, MarkEvent
 
 from schema.base import mutation
 from users.jwt import load_user
@@ -71,25 +71,34 @@ def resolve_delete_game(_, info, id):
 @database_sync_to_async
 def sync_resolve_join_game(_, info, gameId):
     game = Game.objects.get(id=gameId)
-    user = load_user(info)
-    if not user.is_authenticated:
-        raise Exception("User not authenticated")
-    payload = game.join(user)
-    logger.debug(f'resolve_join_game:payload:  {payload}')
-    if payload['ok']:
+    user = info.context["user"]
+    result = game.join(user)
+    logger.debug(f'resolve_join_game:result:  {result}')
+    if result['ok']:
         game.save()
-    return payload
+    return result
 
+@mutation.field("joinGame")
+async def resolve_join_game(_, info, gameId):
+    result = await sync_resolve_join_game(_, info, gameId)
+    if result['ok']:
+        await hub.send(JoinGameEvent(gameId, result['player'].id))
+    return result
+
+
+@database_sync_to_async
+def sync_resolve_mark(_, info, gameId, x, y):
+    game = Game.objects.get(id=gameId)
+    user = info.context["user"]
+    result, event = game.mark(user, x, y)
+    logger.debug(f'resolve_mark:result:  {result}')
+    if result['ok']:
+        game.save()
+    return result, event
 
 @mutation.field("mark")
-@database_sync_to_async
-def resolve_mark(_, info, gameId, x, y):
-    game = Game.objects.get(id=gameId)
-    user = load_user(info)
-    if not user.is_authenticated:
-        raise Exception("User not authenticated")
-    payload = game.mark(user, x, y)
-    logger.debug(f'resolve_mark:payload:  {payload}')
-    if payload['ok']:
-        game.save()
-    return payload
+async def resolve_mark(_, info, gameId, x, y):
+    result, event = await sync_resolve_mark(_, info, gameId, x, y)
+    if result['ok']:
+        await hub.send(event)
+    return result
