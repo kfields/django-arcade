@@ -19,9 +19,19 @@ from user import User
 
 gqlrunner = GqlRunner('localhost:8000/graphql/')
 
+async def run(interval=1/60):
+    """Begin processing events, scheduled functions and window updates.
+
+    This is a convenience function, equivalent to::
+
+        pyglet.app.event_loop.run()
+
+    """
+    return await pyglet.app.event_loop.run(interval)
+
 class EventLoop(pyglet.app.EventLoop):
     
-    async def main(self, interval=1/60):
+    async def run(self, interval=1/60):
         self.clock.schedule_interval_soft(self._redraw_windows, interval)
 
         self.has_exit = False
@@ -48,10 +58,6 @@ class EventLoop(pyglet.app.EventLoop):
         self.is_running = False
         self.dispatch_event('on_exit')
         platform_event_loop.stop()
-
-
-    def run(self, interval=1/60):
-        asyncio.run(self.main(interval))
 
 class Gui:
     def __init__(self, window):
@@ -89,5 +95,6 @@ class App(arcade.Window):
         super().on_draw()
         self.gui.draw()
 
-    def run(self):
-        arcade.run()
+    async def run(self):
+        #arcade.run()
+        return await run()

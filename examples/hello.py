@@ -1,3 +1,5 @@
+import asyncio
+
 from gql import gql
 
 from loguru import logger
@@ -54,11 +56,13 @@ class MyGame(app.App):
 
         arcade.draw_text(str(self.counter), 512, 128, arcade.color.WHITE_SMOKE, 64)
 
-def main():
+async def main():
     """ Main function """
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game.setup()
-    arcade.run()
+    #arcade.run()
+    await game.run()
 
 if __name__ == "__main__":
-    main()
+    #main()
+    asyncio.run(main())

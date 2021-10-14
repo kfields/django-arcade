@@ -10,7 +10,8 @@ django-arcade-core = {path = "../core", develop = true}
 gql = {extras = ["all"], version = "^3.0.0a6", allow-prereleases = true}
 loguru = "^0.5.3"
 arcade = "^2.6.3"
-arcade-imgui = "^0.2.0"
+#arcade = { git = "https://github.com/pythonarcade/arcade.git", branch = "development" }
+arcade-imgui = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 
