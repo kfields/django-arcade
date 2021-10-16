@@ -43,7 +43,9 @@ class GameState:
         pass
 
     def join(self, game, user):
-        pass
+        if Player.objects.filter(user=user, game=game).exists():
+            player = Player.objects.get(user=user, game=game)
+        return { 'ok': True, 'message': 'Player joined', 'player': player}
 
     def mark(self, game, user, x, y):
         pass
@@ -52,7 +54,6 @@ class InitState(GameState):
     def join(self, game, user):
         if Player.objects.filter(user=user, game=game).exists():
             player = Player.objects.get(user=user, game=game)
-        #else
         elif len(Player.objects.filter(game=game)) == 0:
             player = Player.objects.create(user=user, game=game, symbol='X')
         else:
@@ -60,7 +61,7 @@ class InitState(GameState):
             game.enter(TurnState(self.__dict__))
         if not player in self.rotation:
             self.rotation.append(player.id)
-        return { 'ok': True, 'message': '', 'player': player}
+        return { 'ok': True, 'message': 'Player joined', 'player': player}
 
 class TurnState(GameState):
     def enter(self):

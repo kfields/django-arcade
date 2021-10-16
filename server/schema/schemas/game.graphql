@@ -11,7 +11,8 @@ type GameEdge {
 type Game {
   id: ID!
   user: User!
-  state: String!
+  #state: String!
+  state: GameState!
   players: [Player!]!
 }
 

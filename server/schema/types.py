@@ -1,7 +1,13 @@
 from ariadne import ObjectType
 
+user = ObjectType("User")
+game = ObjectType("Game")
+#game_event = ObjectType("GameEvent")
+#join_game_event = ObjectType("JoinGameEvent")
+
 object_types = [
-    ObjectType("User"),
-    ObjectType("GameEvent"),
-    ObjectType("JoinGameEvent"),
+    user,
+    game,
+    #game_event,
+    #join_game_event,
 ]

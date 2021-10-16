@@ -1,0 +1,14 @@
+interface GameState {
+    board: [[String!]]
+    rotation: [ID!]
+}
+
+type InitState implements GameState {
+    board: [[String!]]
+    rotation: [ID!]
+}
+
+type TurnState implements GameState {
+    board: [[String!]]
+    rotation: [ID!]
+}

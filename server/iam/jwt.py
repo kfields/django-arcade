@@ -29,7 +29,7 @@ def load_user(info):
 
 
 def decode_auth_token(scope):
-    logger.debug(f"jwt:decode:scope:  {scope}")
+    #logger.debug(f"jwt:decode:scope:  {scope}")
     headers = dict(scope['headers'])
     if not b'authorization' in headers:
         return None
