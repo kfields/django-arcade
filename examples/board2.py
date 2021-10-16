@@ -114,23 +114,10 @@ class MyGame(app.App):
     def on_mouse_press(self, x, y, button, key_modifiers):
         self.board.on_mouse_press(x, y, button, key_modifiers)
 
-'''
 def main():
     """ Main function """
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
-    arcade.run()
+    game.run()
 
 if __name__ == "__main__":
     main()
-'''
-async def main():
-    """ Main function """
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
-    #arcade.run()
-    await game.run()
-
-if __name__ == "__main__":
-    #main()
-    asyncio.run(main())

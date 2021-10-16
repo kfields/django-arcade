@@ -11,6 +11,6 @@ build/
 _build
 volumes/*
 
-db.sqlite3
+server/db.sqlite3
 server/static/*
 imgui.ini

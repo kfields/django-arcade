@@ -28,8 +28,7 @@ async def run(interval=1/60):
 
 class EventLoop(pyglet.app.EventLoop):
     
-    #async def main(self, interval=1/60):
-    async def run(self, interval=1/60):
+    async def main(self, interval=1/60):
         """Begin processing events, scheduled functions and window updates.
 
         This method returns when :py:attr:`has_exit` is set to True.
@@ -65,10 +64,9 @@ class EventLoop(pyglet.app.EventLoop):
         self.dispatch_event('on_exit')
         platform_event_loop.stop()
 
-    '''
     def run(self, interval=1/60):
         asyncio.run(self.main(interval))
-    '''
+
 class Gui:
     def __init__(self, window):
         self.window = window
@@ -93,9 +91,9 @@ class App(arcade.Window):
     def setup(self):
         pass
 
-    async def run(self):
-        #arcade.run()
-        return await run()
+    def run(self):
+        self.setup()
+        arcade.run()
 
     def draw(self):
         pass

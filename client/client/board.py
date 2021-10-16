@@ -57,7 +57,9 @@ class Board:
             for j in range(3):
                 x = self.x + (j*cell_width) + CELL_PADDING
                 y = self.y - cell_height - (i*cell_height) + CELL_PADDING
-                arcade.draw_text(self.board[i][j], x, y, arcade.color.WHITE_SMOKE, self.symbol_size[0])
+                #arcade.draw_text(self.board[i][j], x, y, arcade.color.WHITE_SMOKE, self.symbol_size[0])
+                #TODO:Arcade/Pyglet/Intel driver bug workaround
+                arcade.draw_text(self.board[i][j] + ' ' * 4, x, y, arcade.color.WHITE_SMOKE, self.symbol_size[0])
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         if x < self.x or x > self.x1 or y > self.y or y < self.y1:

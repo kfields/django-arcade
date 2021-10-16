@@ -6,20 +6,10 @@ import asyncio
 
 from app import App
 
-'''
-app = App()
-
-app.setup()
-
-app.run()
-'''
-
-async def main():
+def main():
     """ Main function """
     app = App()
-    app.setup()
-    await app.run()
+    app.run()
 
 if __name__ == "__main__":
-    #main()
-    asyncio.run(main())
+    main()
