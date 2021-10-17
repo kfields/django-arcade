@@ -53,16 +53,7 @@ class GameState:
 
     def mark(self, game, user, x, y):
         return { 'ok': False, 'message': 'Illegal move!'}
-    '''
-    def check_win_rows(self, symbol):
-        for i in range(3):
-            count = 0
-            for j in range(3):
-                if self.board[i][j] == symbol:
-                    count += 1
-                    if count == 3:
-                        return True
-    '''
+
     def check_win_rows(self, symbol):
         for i in range(3):
             if ''.join(self.board[i]) == symbol * 3:
