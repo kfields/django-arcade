@@ -6,7 +6,7 @@ import arcade
 
 import imgui
 
-from django_arcade_core.game_event import GameEvent, JoinEvent, TurnEvent, MarkEvent
+from django_arcade_core.game_event import GameEvent, JoinEvent, StartEvent, TurnEvent, MarkEvent
 
 from .page import Page
 from game import Game
@@ -78,6 +78,22 @@ def joinGame(gameId, cb):
     }
     app.gqlrunner.execute(query, cb, variable_values=params)
 
+def ready(gameId):
+    query = gql(
+        """
+        mutation ($gameId: ID!) {
+          ready(gameId: $gameId) {
+            ok
+            message
+          }
+        }
+    """
+    )
+    params = {
+        "gameId": gameId
+    }
+    app.gqlrunner.execute(query, lambda data: None, variable_values=params)
+
 def mark(gameId, x, y, cb):
     query = gql(
         """
@@ -130,6 +146,8 @@ class GamePage(Page):
         logger.debug(f'dispatch:event:  {event}')
         if isinstance(event, JoinEvent):
             pass
+        elif isinstance(event, StartEvent):
+            ready(self.game.id)
         elif isinstance(event, TurnEvent):
             if event.player_id == self.player.id:
                 self.board.enable()

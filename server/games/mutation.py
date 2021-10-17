@@ -19,7 +19,7 @@ def resolve_create_game(_, info):
 
 @mutation.field("joinGame")
 @database_sync_to_async
-def sync_resolve_join_game(_, info, gameId):
+def resolve_join_game(_, info, gameId):
     game = Game.objects.get(id=gameId)
     user = info.context["user"]
     result = game.join(user)
@@ -28,19 +28,24 @@ def sync_resolve_join_game(_, info, gameId):
         game.save()
     return result
 
+@mutation.field("ready")
 @database_sync_to_async
-def sync_resolve_mark(_, info, gameId, x, y):
+def resolve_ready(_, info, gameId):
     game = Game.objects.get(id=gameId)
     user = info.context["user"]
-    result, event = game.mark(user, x, y)
+    result = game.ready(user)
+    logger.debug(f'resolve_ready:result:  {result}')
+    if result['ok']:
+        game.save()
+    return result
+
+@mutation.field("mark")
+@database_sync_to_async
+def resolve_mark(_, info, gameId, x, y):
+    game = Game.objects.get(id=gameId)
+    user = info.context["user"]
+    result = game.mark(user, x, y)
     logger.debug(f'resolve_mark:result:  {result}')
     if result['ok']:
         game.save()
-    return result, event
-
-@mutation.field("mark")
-async def resolve_mark(_, info, gameId, x, y):
-    result, event = await sync_resolve_mark(_, info, gameId, x, y)
-    if result['ok']:
-        await hub.send(event)
     return result

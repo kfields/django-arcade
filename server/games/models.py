@@ -22,5 +22,8 @@ class Game(models.Model):
     def join(self, user):
         return self.state.join(self, user)
 
+    def ready(self, user):
+        return self.state.ready(self, user)
+
     def mark(self, user, x, y):
         return self.state.mark(self, user, x, y)

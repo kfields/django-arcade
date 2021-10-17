@@ -13,6 +13,12 @@ def get_next_player():
     pass
 
 class Player(models.Model):
+
+    class Status(models.IntegerChoices):
+        JOINED = 1
+        READY = 2
+
+    status = models.IntegerField(choices=Status.choices, default=Status.JOINED)
     created_at = models.DateTimeField(auto_now_add=True)
     prev = models.OneToOneField('self', blank=True, null=True, related_name='next', on_delete=models.SET(get_prev_player))
     #next = models.OneToOneField('players.Player', related_name='prev', on_delete=models.SET(get_next_player))
@@ -24,3 +30,7 @@ class Player(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def ready(self):
+        self.status = Player.Status.READY
+        self.save()

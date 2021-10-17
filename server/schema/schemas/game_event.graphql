@@ -7,6 +7,10 @@ type JoinEvent implements GameEvent {
     playerId: ID!
 }
 
+type StartEvent implements GameEvent {
+    id: ID!
+}
+
 type TurnEvent implements GameEvent {
     id: ID!
     playerId: ID!

@@ -3,7 +3,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 
-from django_arcade_core.game_event import JoinEvent, TurnEvent, MarkEvent
+from django_arcade_core.game_event import JoinEvent, StartEvent, TurnEvent, MarkEvent
 
 from players.models import Player
 
@@ -18,6 +18,8 @@ empty_board = [
 ]
 
 empty_state = {
+    #'player_count': 0,
+    #'ready_count': 0,
     'board': empty_board,
     'turn': None
 }
@@ -49,8 +51,11 @@ class GameState:
             player = Player.objects.get(user=user, game=game)
         return { 'ok': True, 'message': 'Player joined', 'player': player}
 
+    def ready(self, game, player_id):
+        return { 'ok': False, 'message': 'Not time to start!'}
+
     def mark(self, game, user, x, y):
-        return { 'ok': False, 'message': 'Illegal move!'}, None
+        return { 'ok': False, 'message': 'Illegal move!'}
 
 class InitState(GameState):
     def join(self, game, user):
@@ -64,9 +69,22 @@ class InitState(GameState):
             last_player = Player.objects.get(game=game, next=None)
             player = Player.objects.create(user=user, game=game, symbol='O', prev=last_player)
             async_to_sync(hub.send)(JoinEvent(game.id, player.id))
-            game.enter(TurnState(self.__dict__))
+            game.enter(StartState(self.__dict__))
 
         return { 'ok': True, 'message': 'Player joined', 'player': player}
+
+class StartState(GameState):
+    def enter(self, game):
+        async_to_sync(hub.send)(StartEvent(game.id))
+
+    def ready(self, game, user):
+        player = Player.objects.get(user=user, game=game)
+        player.ready()
+        player_count = Player.objects.filter(game=game).count()
+        ready_count = Player.objects.filter(game=game, status=Player.Status.READY).count()
+        if player_count == ready_count:
+            game.enter(TurnState(self.__dict__))
+        return { 'ok': True, 'message': 'Time to start!'}
 
 class TurnState(GameState):
     def enter(self, game):
@@ -81,8 +99,9 @@ class TurnState(GameState):
             self.turn = player.next.id
         else:
             self.turn = Player.objects.get(game=game, prev=None).id
+        async_to_sync(hub.send)(MarkEvent(game.id, player.symbol, x, y))
         game.enter(TurnState(self.__dict__))
-        return { 'ok': True, 'message': ''}, MarkEvent(game.id, player.symbol, x, y)
+        return { 'ok': True, 'message': ''}
 
 
 class GameStateEncoder(json.JSONEncoder):
@@ -105,5 +124,6 @@ def default_state():
 
 factories = {
     'InitState': lambda data: InitState(data),
+    'StartState': lambda data: StartState(data),
     'TurnState': lambda data: TurnState(data),
 }

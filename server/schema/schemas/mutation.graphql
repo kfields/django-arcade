@@ -10,6 +10,7 @@ type Mutation {
 
   createGame: Game!
   joinGame(gameId: ID!): JoinGamePayload!
+  ready(gameId: ID!): DefaultPayload!
   mark(gameId: ID!, x: Int!, y: Int!): DefaultPayload!
 
   updatePlayer(id: ID!, data: PlayerInput!): DefaultPayload!

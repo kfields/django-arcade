@@ -8,6 +8,11 @@ type InitState implements GameState {
     turn: ID!
 }
 
+type StartState implements GameState {
+    board: [[String!]]
+    turn: ID!
+}
+
 type TurnState implements GameState {
     board: [[String!]]
     turn: ID!

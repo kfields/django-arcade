@@ -16,6 +16,9 @@ class JoinEvent(GameEvent):
         super().__init__(id)
         self.player_id = playerId
 
+class StartEvent(GameEvent):
+    pass
+
 class TurnEvent(GameEvent):
     def __init__(self, id, playerId):
         super().__init__(id)
@@ -30,6 +33,7 @@ class MarkEvent(GameEvent):
 
 factories = {
     'JoinEvent': lambda data: JoinEvent(data['id'], data['playerId']),
+    'StartEvent': lambda data: StartEvent(data['id']),
     'TurnEvent': lambda data: TurnEvent(data['id'], data['playerId']),
     'MarkEvent': lambda data: MarkEvent(data['id'], data['symbol'], data['x'], data['y'])
 }
