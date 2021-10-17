@@ -2,7 +2,12 @@ interface GameEvent {
     id: ID!
 }
 
-type JoinGameEvent implements GameEvent {
+type JoinEvent implements GameEvent {
+    id: ID!
+    playerId: ID!
+}
+
+type TurnEvent implements GameEvent {
     id: ID!
     playerId: ID!
 }

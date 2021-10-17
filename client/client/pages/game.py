@@ -6,7 +6,7 @@ import arcade
 
 import imgui
 
-from django_arcade_core.game_event import GameEvent, MarkEvent
+from django_arcade_core.game_event import GameEvent, JoinEvent, TurnEvent, MarkEvent
 
 from .page import Page
 from game import Game
@@ -15,11 +15,23 @@ from board import Board
 
 import app
 
-gameQuery = gql("""
-subscription ($gameId: ID!) {
-  game
-}
-""")
+def getGameState(id, cb):
+    query = gql(
+        """
+        query ($id: ID!) {
+            game(id: $id) {
+                state {
+                    board
+                    turn
+                }
+            }
+        }
+        """
+    )
+    params = {
+        "id": id,
+    }
+    app.gqlrunner.execute(query, cb, variable_values=params)
 
 def observeGame(id, cb):
     query = gql(
@@ -28,7 +40,10 @@ def observeGame(id, cb):
             game(id: $id) {
                 __typename
                 id
-                ... on JoinGameEvent {
+                ... on JoinEvent {
+                    playerId
+                }
+                ... on TurnEvent {
                     playerId
                 }
                 ... on MarkEvent {
@@ -104,14 +119,23 @@ class GamePage(Page):
             player = self.player = Player(data['joinGame']['player']['id'])
             self.board.symbol = data['joinGame']['player']['symbol']
             logger.debug(f'Player:  {player}')
-
+            def cb2(data):
+                self.board.board = data['game']['state']['board']
+            getGameState(self.game.id, cb2)
         joinGame(self.game.id, cb)
 
     def dispatch(self, data):
         logger.debug(f'dispatch:data:  {data}')
         event = GameEvent.produce(data)
         logger.debug(f'dispatch:event:  {event}')
-        if isinstance(event, MarkEvent):
+        if isinstance(event, JoinEvent):
+            pass
+        elif isinstance(event, TurnEvent):
+            if event.player_id == self.player.id:
+                self.board.enable()
+            else:
+                self.board.disable()
+        elif isinstance(event, MarkEvent):
             self.board.mark(event.symbol, event.x, event.y)
 
 

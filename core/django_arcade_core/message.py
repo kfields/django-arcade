@@ -5,4 +5,5 @@ class Message:
 
 class Event(Message):
     def __init__(self, id):
-        self.id = id
+        #TODO:?:GraphQL uses strings for ID's.  This is producing headaches
+        self.id = str(id)

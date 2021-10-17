@@ -12,6 +12,7 @@ empty_board = [
 
 class Board:
     def __init__(self, cb, x, y, width, height, columns=3, rows=3) -> None:
+        self.enabled = False
         self.cb = cb
         self.x = x
         self.y = y
@@ -26,6 +27,12 @@ class Board:
         self.board = empty_board
         self.symbol = ' '
         self.symbol_size = self.cell_size[0] - CELL_PADDING * 2, self.cell_size[1] - CELL_PADDING * 2
+
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
 
     def mark(self, symbol, x, y):
         self.board[x][y] = symbol
@@ -62,7 +69,7 @@ class Board:
                 arcade.draw_text(self.board[i][j] + ' ' * 4, x, y, arcade.color.WHITE_SMOKE, self.symbol_size[0])
 
     def on_mouse_press(self, x, y, button, key_modifiers):
-        if x < self.x or x > self.x1 or y > self.y or y < self.y1:
+        if not self.enabled or x < self.x or x > self.x1 or y > self.y or y < self.y1:
             return
         cell_width, cell_height = self.cell_size
         j = int((x-self.x) / cell_width)

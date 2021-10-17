@@ -9,8 +9,6 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
 
   createGame: Game!
-  updateGame(id: ID!, data: GameInput!): DefaultPayload!
-  deleteGame(id: ID!): DefaultPayload!
   joinGame(gameId: ID!): JoinGamePayload!
   mark(gameId: ID!, x: Int!, y: Int!): DefaultPayload!
 

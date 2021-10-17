@@ -1,7 +1,9 @@
 #from django.core.serializers.json import DjangoJSONEncoder
 import json
+from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
 
-from django_arcade_core.game_event import JoinGameEvent, MarkEvent
+from django_arcade_core.game_event import JoinEvent, TurnEvent, MarkEvent
 
 from players.models import Player
 
@@ -36,7 +38,7 @@ class GameState:
             'turn': self.turn
         }
 
-    def enter(self):
+    def enter(self, game):
         pass
 
     def exit(self):
@@ -57,16 +59,18 @@ class InitState(GameState):
         elif len(Player.objects.filter(game=game)) == 0:
             player = Player.objects.create(user=user, game=game, symbol='X')
             self.turn = player.id
+            async_to_sync(hub.send)(JoinEvent(game.id, player.id))
         else:
             last_player = Player.objects.get(game=game, next=None)
             player = Player.objects.create(user=user, game=game, symbol='O', prev=last_player)
+            async_to_sync(hub.send)(JoinEvent(game.id, player.id))
             game.enter(TurnState(self.__dict__))
 
         return { 'ok': True, 'message': 'Player joined', 'player': player}
 
 class TurnState(GameState):
-    def enter(self):
-        pass
+    def enter(self, game):
+        async_to_sync(hub.send)(TurnEvent(game.id, self.turn))
 
     def mark(self, game, user, x, y):
         player = Player.objects.get(user=user, game=game)
@@ -77,7 +81,7 @@ class TurnState(GameState):
             self.turn = player.next.id
         else:
             self.turn = Player.objects.get(game=game, prev=None).id
-
+        game.enter(TurnState(self.__dict__))
         return { 'ok': True, 'message': ''}, MarkEvent(game.id, player.symbol, x, y)
 
 

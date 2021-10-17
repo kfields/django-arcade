@@ -3,7 +3,7 @@ from loguru import logger
 from channels.db import database_sync_to_async
 
 #from .hub import hub, PlayerSubscriber, PlayerEvent
-#from games.hub import hub as gamehub, JoinGameEvent
+#from games.hub import hub as gamehub, JoinEvent
 
 #from .hub import hub, GameSubscriber
 

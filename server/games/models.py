@@ -4,8 +4,6 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 
-from players.models import Player
-
 from .state import default_state, GameStateEncoder, GameStateDecoder
 
 class Game(models.Model):
@@ -19,7 +17,7 @@ class Game(models.Model):
         if self.state:
             self.state.exit()
         self.state = state
-        state.enter()
+        state.enter(self)
 
     def join(self, user):
         return self.state.join(self, user)

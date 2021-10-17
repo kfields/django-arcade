@@ -23,18 +23,22 @@ def resolve_all_games(root, info, after='', before='', first=0, last=0):
 def resolve_game(*_, id):
     return Game.objects.get(id=id)
 
+# Subresolvers
+
 @game.field("players")
 @database_sync_to_async
 def resolve_game_players(obj, *_):
     players = list(Player.objects.filter(game=obj['id']))
     return players
 
+
 @game.field('state')
 @database_sync_to_async
 def resolve_game_state(obj, *_):
     #obj:  Game instance
-    #return obj.wire()
     logger.debug(f'resolve_game_state:game:  {obj}')
-    game = Game.objects.get(id=obj['id'])
+    #TODO:This was passed as a dictionary before.  Why?
+    #game = Game.objects.get(id=obj['id'])
+    game = obj
     state = game.state
     return state.wire()
