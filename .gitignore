@@ -9,8 +9,7 @@ env
 dist/
 build/
 _build
-volumes/*
 
-server/db.sqlite3
+db.sqlite3
 server/static/*
 imgui.ini
