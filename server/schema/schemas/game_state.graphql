@@ -17,3 +17,8 @@ type TurnState implements GameState {
     board: [[String!]]
     turn: ID!
 }
+
+type EndState implements GameState {
+    board: [[String!]]
+    turn: ID!
+}

@@ -59,7 +59,7 @@ class Users(Page):
                 imgui.text(user['username'])
                 imgui.next_column()
                 imgui.text(user['email'])
-                imgui.next_column()
+                #imgui.next_column()
 
         imgui.columns(1)
         imgui.end()

@@ -74,5 +74,7 @@ class Board:
         cell_width, cell_height = self.cell_size
         j = int((x-self.x) / cell_width)
         i = int((self.y-y) / cell_height)
+        if self.board[i][j] != ' ':
+            return
         self.board[i][j] = self.symbol
         self.cb(i, j)

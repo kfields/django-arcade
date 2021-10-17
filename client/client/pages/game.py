@@ -51,6 +51,9 @@ def observeGame(id, cb):
                     x
                     y
                 }
+                ... on EndEvent {
+                    playerId
+                }
             }
         }
     """

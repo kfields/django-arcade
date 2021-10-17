@@ -22,3 +22,8 @@ type MarkEvent implements GameEvent {
     x: Int!
     y: Int!
 }
+
+type EndEvent implements GameEvent {
+    id: ID!
+    playerId: ID!
+}

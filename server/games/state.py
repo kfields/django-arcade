@@ -1,9 +1,8 @@
 #from django.core.serializers.json import DjangoJSONEncoder
 import json
 from asgiref.sync import async_to_sync
-from channels.db import database_sync_to_async
 
-from django_arcade_core.game_event import JoinEvent, StartEvent, TurnEvent, MarkEvent
+from django_arcade_core.game_event import JoinEvent, StartEvent, TurnEvent, MarkEvent, EndEvent
 
 from players.models import Player
 
@@ -18,8 +17,6 @@ empty_board = [
 ]
 
 empty_state = {
-    #'player_count': 0,
-    #'ready_count': 0,
     'board': empty_board,
     'turn': None
 }
@@ -56,6 +53,37 @@ class GameState:
 
     def mark(self, game, user, x, y):
         return { 'ok': False, 'message': 'Illegal move!'}
+    '''
+    def check_win_rows(self, symbol):
+        for i in range(3):
+            count = 0
+            for j in range(3):
+                if self.board[i][j] == symbol:
+                    count += 1
+                    if count == 3:
+                        return True
+    '''
+    def check_win_rows(self, symbol):
+        for i in range(3):
+            if ''.join(self.board[i]) == symbol * 3:
+                return True
+        return False
+
+    def check_win_cols(self, symbol):
+        for j in range(3):
+            if self.board[0][j] + self.board[1][j] + self.board[2][j] == symbol * 3:
+                return True
+        return False
+
+    def check_win_diag(self, symbol):
+        if self.board[0][0] + self.board[1][1] + self.board[2][2] == symbol * 3:
+            return True
+        if self.board[0][2] + self.board[1][1] + self.board[2][0] == symbol * 3:
+            return True
+        return False
+
+    def check_win(self, symbol):
+        return self.check_win_rows(symbol) or self.check_win_cols(symbol) or self.check_win_diag(symbol)
 
 class InitState(GameState):
     def join(self, game, user):
@@ -93,15 +121,28 @@ class TurnState(GameState):
     def mark(self, game, user, x, y):
         player = Player.objects.get(user=user, game=game)
         if player.id != self.turn:
-            return { 'ok': False, 'message': 'Not your turn!'}, None
+            return { 'ok': False, 'message': 'Not your turn!'}
+        if self.board[x][y] != ' ':
+            return { 'ok': False, 'message': 'Illegal Move!'}
+
         self.board[x][y] = player.symbol
+        async_to_sync(hub.send)(MarkEvent(game.id, player.symbol, x, y))
+
+        if self.check_win(player.symbol):
+            game.enter(EndState(self.__dict__))
+            return { 'ok': True, 'message': 'Match!'}
+
         if hasattr(player, 'next'):
             self.turn = player.next.id
         else:
             self.turn = Player.objects.get(game=game, prev=None).id
-        async_to_sync(hub.send)(MarkEvent(game.id, player.symbol, x, y))
+
         game.enter(TurnState(self.__dict__))
         return { 'ok': True, 'message': ''}
+
+class EndState(GameState):
+    def enter(self, game):
+        async_to_sync(hub.send)(EndEvent(game.id, self.turn))
 
 
 class GameStateEncoder(json.JSONEncoder):
@@ -126,4 +167,5 @@ factories = {
     'InitState': lambda data: InitState(data),
     'StartState': lambda data: StartState(data),
     'TurnState': lambda data: TurnState(data),
+    'EndState': lambda data: EndState(data),
 }
