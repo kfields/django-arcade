@@ -17,13 +17,13 @@ empty_board = [
 
 empty_state = {
     'board': empty_board,
-    'rotation': []
+    'turn': None
 }
 
 class GameState:
     def __init__(self, data) -> None:
         self.board = data['board']
-        self.rotation = data['rotation']
+        self.turn = data['turn']
 
     @property
     def typename(self):
@@ -33,7 +33,7 @@ class GameState:
         return {
             '__typename': self.typename,
             'board': self.board,
-            'rotation': self.rotation
+            'turn': self.turn
         }
 
     def enter(self):
@@ -48,7 +48,7 @@ class GameState:
         return { 'ok': True, 'message': 'Player joined', 'player': player}
 
     def mark(self, game, user, x, y):
-        pass
+        return { 'ok': False, 'message': 'Illegal move!'}, None
 
 class InitState(GameState):
     def join(self, game, user):
@@ -56,11 +56,12 @@ class InitState(GameState):
             player = Player.objects.get(user=user, game=game)
         elif len(Player.objects.filter(game=game)) == 0:
             player = Player.objects.create(user=user, game=game, symbol='X')
+            self.turn = player.id
         else:
-            player = Player.objects.create(user=user, game=game, symbol='O')
+            last_player = Player.objects.get(game=game, next=None)
+            player = Player.objects.create(user=user, game=game, symbol='O', prev=last_player)
             game.enter(TurnState(self.__dict__))
-        if not player in self.rotation:
-            self.rotation.append(player.id)
+
         return { 'ok': True, 'message': 'Player joined', 'player': player}
 
 class TurnState(GameState):
@@ -69,9 +70,14 @@ class TurnState(GameState):
 
     def mark(self, game, user, x, y):
         player = Player.objects.get(user=user, game=game)
-        if player.id != self.rotation[0]:
+        if player.id != self.turn:
             return { 'ok': False, 'message': 'Not your turn!'}, None
         self.board[x][y] = player.symbol
+        if hasattr(player, 'next'):
+            self.turn = player.next.id
+        else:
+            self.turn = Player.objects.get(game=game, prev=None).id
+
         return { 'ok': True, 'message': ''}, MarkEvent(game.id, player.symbol, x, y)
 
 
@@ -79,7 +85,7 @@ class GameStateEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, GameState):
             return o.wire()
-        return super().encode(o)
+        return super().default(o)
 
 class GameStateDecoder(json.JSONDecoder):
     def decode(self, s):
