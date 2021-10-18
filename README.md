@@ -27,7 +27,7 @@ poetry install
 ./bin/setup
 ```
 
-### After That
+### After that ...
 
 ```
 ./bin/dev
@@ -54,3 +54,8 @@ cd experiments
 poetry install
 python counter.py
 ```
+
+## Special Thanks
+Django Bulma app from:  https://github.com/lemonsaurus/django-simple-bulma
+
+Some more stuff from:  https://github.com/python-discord/site
