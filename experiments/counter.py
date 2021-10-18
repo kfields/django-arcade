@@ -15,12 +15,6 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Hello World!"
 
-getMessageQuery = gql("""
-query {
-  getMessage
-}
-""")
-
 counterQuery = gql("""
 subscription {
   counter
@@ -29,6 +23,19 @@ subscription {
 
 def cb(data):
     print(data)
+
+def setCounter(val, cb):
+    query = gql(
+        """
+        mutation ($val: Int!) {
+          setCounter(val: $val)
+        }
+    """
+    )
+    params = {
+        "val": val,
+    }
+    app.gqlrunner.execute(query, cb, variable_values=params)
 
 
 class MyGame(app.App):
@@ -46,23 +53,26 @@ class MyGame(app.App):
 
 
     def draw(self):
-        imgui.begin("Test Window")
+        imgui.begin("Counter")
+
         imgui.text('Count:  ')
         imgui.same_line()
         imgui.text(str(self.counter))
         changed, self.test_input = imgui.input_int("Integer Input Test", self.test_input)
 
+        if imgui.button("Set Counter"):
+            def cb(data):
+                pass
+            setCounter(self.test_input, cb)
+
         imgui.end()
 
         arcade.draw_text(str(self.counter), 512, 128, arcade.color.WHITE_SMOKE, 64)
 
-async def main():
+def main():
     """ Main function """
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
-    #arcade.run()
-    await game.run()
+    game.run()
 
 if __name__ == "__main__":
-    #main()
-    asyncio.run(main())
+    main()

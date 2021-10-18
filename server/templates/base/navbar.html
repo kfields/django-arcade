@@ -4,7 +4,8 @@
   <div class="navbar-brand">
 
     <a id="navbar-banner" class="navbar-item has-left-margin-1" href="/">
-      <img src="{% static "images/navbar/pydis_banner_no_square.svg" %}" alt="Python Discord logo"/>
+      <img src="{% static "images/navbar/django-logo-negative.svg" %}" alt="Django Arcade logo"/>
+      Arcade
     </a>
 
     {# The navbar "burger" which appears when rendered on screens that can't fit the entire nav #}
@@ -26,13 +27,13 @@
       </a>
 
       {# GitHub #}
-      <a class="navbar-item" href="https://github.com/python-discord">
+      <a class="navbar-item" href="https://github.com/kfields/django-arcade">
         <span class="icon is-size-4 is-medium"><i class="fab fa-github"></i></span>
         <span>&nbsp;GitHub</span>
       </a>
 
       {# Patreon #}
-      <a class="navbar-item" href="http://patreon.com/python_discord">
+      <a class="navbar-item" href="https://www.patreon.com/kfields">
         <span class="icon is-size-4 is-medium"><i class="fab fa-patreon"></i></span>
         <span>&nbsp;Patreon</span>
       </a>
@@ -56,10 +57,8 @@
           <a class="navbar-item" href="{% url 'signup' %}">Sign Up</a>
           {% endif %}
 
-          <hr class="navbar-divider">
-          <a class="navbar-item">
-            Report an issue
-          </a>
+          {# <hr class="navbar-divider"> #}
+          {# More Stuff #}
         </div>
       </div>
       

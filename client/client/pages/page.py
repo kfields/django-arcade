@@ -1,6 +1,12 @@
 import arcade
 import imgui
 
+NAV = [
+    { 'title': 'Home', 'name': 'home'},
+    { 'title': 'Users', 'name': 'users'},
+    { 'title': 'Counter', 'name': 'counter'},
+]
+
 class Page(arcade.View):
     def __init__(self, window, name, title):
         super().__init__(window)
@@ -47,7 +53,8 @@ class Page(arcade.View):
 
         if imgui.listbox_header("Pages", -1, -1):
 
-            for entry in router.pages.values():
+            #for entry in router.pages.values():
+            for entry in NAV:
                 opened, selected = imgui.selectable(entry['title'], entry['name'] == router.page.name)
                 if opened:
                     self.window.router.go(entry['name'])

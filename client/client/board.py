@@ -41,7 +41,10 @@ class Board:
         self.enabled = False
 
     def mark(self, symbol, x, y):
+        if self.board[x][y] != ' ':
+            return
         self.board[x][y] = symbol
+        self.check_win(symbol)
 
     def draw(self):
         self.draw_lines()
@@ -133,8 +136,5 @@ class Board:
         cell_width, cell_height = self.cell_size
         j = int((x-self.x) / cell_width)
         i = int((self.y-y) / cell_height)
-        if self.board[i][j] != ' ':
-            return
-        self.board[i][j] = self.symbol
+        self.mark(self.symbol, i, j)
         self.cb(i, j)
-        self.check_win('X')
